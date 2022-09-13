@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: {{ .IngressClass }}
+    nginx.ingress.kubernetes.io/ssl-redirect: 'true'
+  name: {{ .Url }}
+  namespace: {{ .Namespace }}
+spec:
+  tls:
+  - hosts:
+      - {{ .Url }}
+    secretName: {{ .TlsSecretName }}
+  rules:
+  - host: {{ .Url }}
+    http:
+      paths:
+      - path: {{ .TttpPath }}
+        backend:
+          service:
+            name: {{ .BackendServiceName }}
+            port:
+              number: {{ .ServicePort }}
+        pathType: Prefix
